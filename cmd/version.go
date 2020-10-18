@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/myugen/hexagonal-go-architecture/core/constants"
+
 	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"
@@ -11,9 +13,9 @@ import (
 var (
 	versionCmd = &cobra.Command{
 		Use:   "version",
-		Short: "Print hexagonal architecture app version",
+		Short: fmt.Sprintf("Print %s version", constants.AppName),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("app version %s", viper.GetString("version"))
+			fmt.Printf("%s version %s", constants.AppLabel, viper.GetString("version"))
 		},
 	}
 )

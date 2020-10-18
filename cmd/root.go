@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/myugen/hexagonal-go-architecture/core/constants"
+
 	"github.com/myugen/hexagonal-go-architecture/logger"
 	"github.com/sirupsen/logrus"
 
@@ -18,8 +20,8 @@ var (
 	configFile  string
 	userLicense string
 	rootCmd     = &cobra.Command{
-		Use:   "app",
-		Short: "Root command for hexagonal architecture app",
+		Use:   constants.AppLabel,
+		Short: fmt.Sprintf("Root command for %s", constants.AppName),
 	}
 )
 
@@ -34,7 +36,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 	initLogger()
 
-	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", "config file path (default lookups [./config.yml, $HOME/.app/config.yml, /etc/app/config.yml])")
+	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", fmt.Sprintf("config file path (default lookups [./config.yml, $HOME/.%s/config.yml, /etc/%s/config.yml])", constants.AppLabel, constants.AppLabel))
 	rootCmd.PersistentFlags().StringP("author", "a", "Miguel Cabrera", "author name for copyright attribution")
 	rootCmd.PersistentFlags().StringVarP(&userLicense, "license", "l", "apache", "name of license for the project")
 	rootCmd.PersistentFlags().Bool("viper", true, "use Viper for configuration")
@@ -45,6 +47,7 @@ func init() {
 	viper.SetDefault("version", "0.0.1")
 	viper.SetDefault("verbose", false)
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(upCmd)
 }
 
 func initConfig() {
@@ -60,12 +63,13 @@ func initConfig() {
 		}
 
 		// Search config in home directory with name ".config" (without extension).
-		viper.AddConfigPath("/etc/app/") // path to look for the config file in
-		viper.AddConfigPath(fmt.Sprintf("%s/.app", home))
+		viper.AddConfigPath(fmt.Sprintf("/etc/%s/", constants.AppLabel)) // path to look for the config file in
+		viper.AddConfigPath(fmt.Sprintf("%s/.%s", home, constants.AppLabel))
 		viper.AddConfigPath(".")
 		viper.SetConfigName("config")
 	}
 
+	viper.SetEnvPrefix(constants.AppLabel)
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
