@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/myugen/hexagonal-go-architecture/core/constants"
+	"github.com/myugen/hexagonal-go-architecture/utils/constants"
 
 	"github.com/myugen/hexagonal-go-architecture/logger"
 	"github.com/sirupsen/logrus"
