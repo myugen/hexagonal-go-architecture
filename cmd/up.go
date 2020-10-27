@@ -8,11 +8,17 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
+
+	"github.com/spf13/viper"
+
+	"github.com/myugen/hexagonal-go-architecture/pkg/postgres"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/labstack/echo/v4/middleware"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/articles/adapters/api/routes"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/api/routes"
 
 	"github.com/labstack/echo/v4"
 
@@ -29,11 +35,17 @@ var (
 )
 
 func run(cmd *cobra.Command, args []string) {
+	logger.Log().Debug("Connecting postgres database")
+	if err := postgres.Initialize(); err != nil {
+		logger.Log().Fatalf("Error on database connection: %s", err)
+	}
+	serverConfig := viper.GetStringMapString("server")
+	logger.Log().Debugf("Starting API Server on port: %s", serverConfig["port"])
 	server := setupServer()
 
 	go func() {
-		if err := server.Start(":8181"); err != nil {
-			logrus.Fatal("Error setting up the server: %s", err)
+		if err := server.Start(fmt.Sprintf(":%s", serverConfig["port"])); err != nil {
+			logger.Log().Fatalf("Error on server: %s", err)
 		}
 	}()
 
@@ -44,6 +56,9 @@ func setupServer() *echo.Echo {
 	e := echo.New()
 	e.Use(middleware.CORS())
 	e.Use(middleware.Gzip())
+	if viper.GetBool("verbose") {
+		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{}))
+	}
 
 	routes.RegisterRoute(e)
 	return e
@@ -59,13 +74,16 @@ func graceful(server *echo.Echo, timeout time.Duration) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	logrus.Info("Server shutdown")
+	logger.Log().Info("Server shutdown")
 	if err := server.Shutdown(ctx); err != nil {
-		logrus.Errorf("Server shutdown: %s\n", err)
+		logger.Log().Errorf("Server shutdown: %s\n", err)
 	}
 
 	// After shutdown operations
 	//---------------------------
 	logrus.Info("Closing connections after shutdown")
+	if err := postgres.Close(); err != nil {
+		logger.Log().Error("Database shutdown error: %s\n", err)
+	}
 	//---------------------------
 }

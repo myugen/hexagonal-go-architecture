@@ -5,10 +5,8 @@ import (
 
 	"github.com/myugen/hexagonal-go-architecture/utils/constants"
 
-	"github.com/myugen/hexagonal-go-architecture/logger"
-	"github.com/sirupsen/logrus"
-
 	"github.com/mitchellh/go-homedir"
+	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -16,7 +14,6 @@ import (
 )
 
 var (
-	Log         *logrus.Entry
 	configFile  string
 	userLicense string
 	rootCmd     = &cobra.Command{
@@ -34,16 +31,15 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	initLogger()
+	// Logger initialization
+	// ---------------------
+	logger.Initialize()
+	// ---------------------
 
 	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", fmt.Sprintf("config file path (default lookups [./config.yml, $HOME/.%s/config.yml, /etc/%s/config.yml])", constants.AppLabel, constants.AppLabel))
-	rootCmd.PersistentFlags().StringP("author", "a", "Miguel Cabrera", "author name for copyright attribution")
-	rootCmd.PersistentFlags().StringVarP(&userLicense, "license", "l", "apache", "name of license for the project")
-	rootCmd.PersistentFlags().Bool("viper", true, "use Viper for configuration")
-	viper.BindPFlag("author", rootCmd.PersistentFlags().Lookup("author"))
-	viper.BindPFlag("useViper", rootCmd.PersistentFlags().Lookup("viper"))
+	rootCmd.PersistentFlags().StringVarP(&userLicense, "license", "l", "MIT", "name of license for the project")
 	viper.SetDefault("author", "Miguel Cabrera <me@mcabsan.dev>")
-	viper.SetDefault("license", "apache")
+	viper.SetDefault("license", "MIT")
 	viper.SetDefault("version", "0.0.1")
 	viper.SetDefault("verbose", false)
 	rootCmd.AddCommand(versionCmd)
@@ -75,16 +71,4 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
-}
-
-func initLogger() {
-	log := logger.New()
-	if viper.GetBool("verbose") {
-		log.Logger.SetLevel(logrus.DebugLevel)
-	} else {
-		log.Logger.SetLevel(logrus.InfoLevel)
-	}
-
-	entry := &logrus.Entry{Logger: log.Logger}
-	Log = entry.WithField("module", "cmd")
 }
