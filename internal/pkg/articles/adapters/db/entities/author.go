@@ -1,6 +1,6 @@
 package entities
 
-import "github.com/myugen/hexagonal-go-architecture/pkg/articles/domain/models"
+import "github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/domain/models"
 
 type Author struct {
 	tableName struct{} `pg:"alias:author"`

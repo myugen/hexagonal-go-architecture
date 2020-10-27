@@ -1,8 +1,8 @@
 package entities
 
 import (
-	"github.com/myugen/hexagonal-go-architecture/pkg/articles/adapters/db/types"
-	"github.com/myugen/hexagonal-go-architecture/pkg/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/db/types"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/domain/models"
 )
 
 type Article struct {

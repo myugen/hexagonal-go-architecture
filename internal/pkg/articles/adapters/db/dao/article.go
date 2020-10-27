@@ -3,10 +3,10 @@ package dao
 import (
 	"context"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/articles/adapters/db/entities"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/db/entities"
 
 	"github.com/go-pg/pg/v10"
-	"github.com/myugen/hexagonal-go-architecture/pkg/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/domain/models"
 )
 
 type article struct {

@@ -3,9 +3,9 @@ package services
 import (
 	"context"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/articles/ports/repositories"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/repositories"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/domain/models"
 
 	"github.com/pkg/errors"
 )

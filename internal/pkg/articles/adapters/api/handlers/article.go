@@ -3,10 +3,10 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/articles/adapters/api/responses"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/api/responses"
 
 	"github.com/labstack/echo/v4"
-	"github.com/myugen/hexagonal-go-architecture/pkg/articles/ports/services"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/services"
 )
 
 type IArticle interface {

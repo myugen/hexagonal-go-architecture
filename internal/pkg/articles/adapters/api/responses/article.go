@@ -1,6 +1,6 @@
 package responses
 
-import "github.com/myugen/hexagonal-go-architecture/pkg/articles/domain/models"
+import "github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/domain/models"
 
 type Article struct {
 	ID      uint   `json:"id"`
