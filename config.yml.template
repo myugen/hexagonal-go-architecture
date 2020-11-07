@@ -1,0 +1,11 @@
+mode: FILL_MODE
+version: FILL_VERSION
+server:
+  port: FILL_SERVER_PORT
+db:
+  host: FILL_DB_HOST
+  port: FILL_DB_PORT
+  database: FILL_DB_DATABASE
+  user: FILL_DB_USER
+  password: FILL_DB_PASSWORD
+verbose: FILL_VERBOSE

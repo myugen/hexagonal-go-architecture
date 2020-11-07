@@ -3,8 +3,12 @@ package postgres
 import (
 	"context"
 	"fmt"
+	"os/exec"
 	"sync"
-	"time"
+
+	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
+
+	"github.com/pkg/errors"
 
 	"github.com/myugen/hexagonal-go-architecture/utils/constants"
 
@@ -14,9 +18,8 @@ import (
 )
 
 var (
-	db    *pg.DB
-	once  sync.Once
-	mutex sync.Mutex
+	db   *pg.DB
+	once sync.Once
 )
 
 func Initialize() (err error) {
@@ -27,9 +30,6 @@ func Initialize() (err error) {
 }
 
 func DB() *pg.DB {
-	mutex.Lock()
-	defer mutex.Unlock()
-
 	return db
 }
 
@@ -43,19 +43,27 @@ func Close() error {
 func create() error {
 	dbConfig := viper.GetStringMapString("db")
 	db = pg.Connect(&pg.Options{
-		Addr:     fmt.Sprintf("%s:%s", dbConfig["host"], dbConfig["port"]),
-		User:     dbConfig["user"],
-		Database: dbConfig["postgres"],
-		Password: dbConfig["password"],
+		Addr:            fmt.Sprintf("%s:%s", dbConfig["host"], dbConfig["port"]),
+		User:            dbConfig["user"],
+		Database:        dbConfig["database"],
+		Password:        dbConfig["password"],
+		ApplicationName: constants.AppName,
 		OnConnect: func(ctx context.Context, cn *pg.Conn) error {
-			_, cnErr := cn.Exec(`SET application_name = ?; SET TIME ZONE 'UTC';`, constants.AppName)
+			_, cnErr := cn.Exec(`SET TIME ZONE 'UTC';`)
 			return cnErr
 		},
-		IdleTimeout: 30 * time.Second,
 	})
 
 	if _, err := db.Exec("SELECT 1"); err != nil {
-		return err
+		return errors.Wrap(err, "database connection failure")
+	}
+
+	cmd := exec.Command("sh", "-c", "go run migrations/*.go migrate")
+	if out, err := cmd.CombinedOutput(); err != nil {
+		logger.Log().Errorf("migration command output: %s\n", out)
+		return errors.Wrap(err, "migration execution failure")
+	} else {
+		logger.Log().Infof("migration status: %s", out)
 	}
 
 	return nil
