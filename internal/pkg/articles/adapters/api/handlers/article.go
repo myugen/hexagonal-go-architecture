@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/api/requests"
 
@@ -13,6 +14,9 @@ import (
 
 type IArticle interface {
 	Get(e echo.Context) error
+	Find(e echo.Context) error
+	Create(e echo.Context) error
+	Update(e echo.Context) error
 }
 
 type articleHandler struct {
@@ -28,9 +32,9 @@ func (h *articleHandler) Get(c echo.Context) error {
 	id := c.Param("id")
 	article, err := h.articleService.Get(ctx, id)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs getting an article", err)
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs getting an article")
 	}
-	return c.JSON(http.StatusOK, responses.FromModel(article))
+	return c.JSON(http.StatusOK, responses.NewArticleResponse(article))
 }
 
 func (h *articleHandler) Find(c echo.Context) error {
@@ -40,13 +44,46 @@ func (h *articleHandler) Find(c echo.Context) error {
 	qArticle := qpArticle.ToArticleQuery()
 	articles, err := h.articleService.Find(ctx, qArticle)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs getting articles", err)
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs getting articles")
 	}
 
-	response := make([]*responses.Article, 0)
+	response := make([]*responses.ArticleResponse, 0)
 	for _, article := range articles {
-		response = append(response, responses.FromModel(article))
+		response = append(response, responses.NewArticleResponse(article))
 	}
 
 	return c.JSON(http.StatusOK, response)
+}
+
+func (h *articleHandler) Create(c echo.Context) error {
+	ctx := c.Request().Context()
+	body := new(requests.ArticleCreateRequest)
+	if err := c.Bind(body); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs creating an article: %s")
+	}
+
+	article, err := h.articleService.Create(ctx, body.ToCommand())
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs creating an article")
+	}
+
+	return c.JSON(http.StatusOK, responses.NewArticleResponse(article))
+}
+
+func (h *articleHandler) Update(c echo.Context) error {
+	ctx := c.Request().Context()
+	id := c.Param("id")
+	body := new(requests.ArticleUpdateRequest)
+	if err := c.Bind(body); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs updating an article")
+	}
+	aux, err := strconv.ParseUint(id, 10, 64)
+	body.ID = uint(aux)
+
+	article, err := h.articleService.Update(ctx, body.ToCommand())
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs updating an article", err)
+	}
+
+	return c.JSON(http.StatusOK, responses.NewArticleResponse(article))
 }

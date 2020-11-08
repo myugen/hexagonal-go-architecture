@@ -20,4 +20,6 @@ func RegisterRoute(parent *echo.Group) {
 	articleRoute := parent.Group("/articles")
 	articleRoute.GET("", articleHandler.Find)
 	articleRoute.GET("/:id", articleHandler.Get)
+	articleRoute.POST("", articleHandler.Create)
+	articleRoute.PUT("/:id", articleHandler.Update)
 }

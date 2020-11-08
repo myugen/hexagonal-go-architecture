@@ -7,6 +7,33 @@ import (
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/domain/models"
 )
 
+type ArticleCreateRequest struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+func (r *ArticleCreateRequest) ToCommand() *models.ArticleCreateCommand {
+	return &models.ArticleCreateCommand{
+		Title:   r.Title,
+		Content: r.Content,
+	}
+}
+
+type ArticleUpdateRequest struct {
+	ID uint `json:"id"`
+	*ArticleCreateRequest
+}
+
+func (r *ArticleUpdateRequest) ToCommand() *models.ArticleUpdateCommand {
+	return &models.ArticleUpdateCommand{
+		ID: r.ID,
+		ArticleCreateCommand: &models.ArticleCreateCommand{
+			Title:   r.Title,
+			Content: r.Content,
+		},
+	}
+}
+
 type ArticleQueryParams struct {
 	Offset   int    `json:"offset"`
 	Limit    int    `json:"limit"`

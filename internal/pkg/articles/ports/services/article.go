@@ -3,6 +3,8 @@ package services
 import (
 	"context"
 
+	"github.com/go-playground/validator/v10"
+
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/repositories"
 
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/domain/models"
@@ -17,14 +19,17 @@ var (
 type IArticle interface {
 	Get(ctx context.Context, id string) (*models.Article, error)
 	Find(ctx context.Context, query *models.ArticleQuery) ([]*models.Article, error)
+	Create(ctx context.Context, command *models.ArticleCreateCommand) (*models.Article, error)
+	Update(ctx context.Context, command *models.ArticleUpdateCommand) (*models.Article, error)
 }
 
 type article struct {
 	articleRepository repositories.IArticle
+	validate          *validator.Validate
 }
 
 func New(articleRepository repositories.IArticle) *article {
-	return &article{articleRepository: articleRepository}
+	return &article{articleRepository: articleRepository, validate: validator.New()}
 }
 
 func (s *article) Get(ctx context.Context, id string) (*models.Article, error) {
@@ -42,4 +47,30 @@ func (s *article) Find(ctx context.Context, query *models.ArticleQuery) ([]*mode
 	}
 
 	return result, err
+}
+
+func (s *article) Create(ctx context.Context, command *models.ArticleCreateCommand) (*models.Article, error) {
+	if err := s.validate.Struct(command); err != nil {
+		return nil, err
+	}
+
+	result, err := s.articleRepository.Create(ctx, command)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s *article) Update(ctx context.Context, command *models.ArticleUpdateCommand) (*models.Article, error) {
+	if err := s.validate.Struct(command); err != nil {
+		return nil, err
+	}
+
+	result, err := s.articleRepository.Update(ctx, command)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }

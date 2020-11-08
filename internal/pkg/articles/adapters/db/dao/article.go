@@ -19,7 +19,7 @@ func New(db *pg.DB) *article {
 }
 
 func (d *article) FindByID(ctx context.Context, id string) (*models.Article, error) {
-	eArticles := new(entities.Article)
+	eArticles := new(entities.ArticleEntity)
 	if err := d.db.Model(eArticles).
 		Where("article.id = ?", id).
 		Relation("Author").
@@ -31,7 +31,7 @@ func (d *article) FindByID(ctx context.Context, id string) (*models.Article, err
 }
 
 func (d *article) Find(ctx context.Context, query *models.ArticleQuery) ([]*models.Article, error) {
-	eArticles := new([]*entities.Article)
+	eArticles := new([]*entities.ArticleEntity)
 	fArticle := types.NewArticleFilter(query)
 	if err := d.db.Model(eArticles).
 		Relation("Author").
@@ -46,4 +46,34 @@ func (d *article) Find(ctx context.Context, query *models.ArticleQuery) ([]*mode
 	}
 
 	return articles, nil
+}
+
+func (d *article) Create(ctx context.Context, command *models.ArticleCreateCommand) (*models.Article, error) {
+	eArticle := entities.NewArticleEntity(command)
+	if _, err := d.db.Model(eArticle).
+		Insert(); err != nil {
+		return nil, err
+	}
+
+	return eArticle.ToModel(), nil
+}
+
+func (d *article) Update(ctx context.Context, command *models.ArticleUpdateCommand) (*models.Article, error) {
+	eArticle := new(entities.ArticleEntity)
+	eArticle.ID = command.ID
+	if err := d.db.Model(eArticle).
+		Relation("Author").
+		WherePK().
+		Select(); err != nil {
+		return nil, err
+	}
+
+	eArticle.UpdateFrom(command)
+	if _, err := d.db.Model(eArticle).
+		WherePK().
+		UpdateNotZero(); err != nil {
+		return nil, err
+	}
+
+	return eArticle.ToModel(), nil
 }
