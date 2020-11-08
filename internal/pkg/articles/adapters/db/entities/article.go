@@ -22,10 +22,11 @@ func (e *ArticleEntity) ToModel() *models.Article {
 		author = e.Author.ToModel()
 	}
 	return &models.Article{
-		ID:      e.ID,
-		Title:   e.Title,
-		Content: e.Content,
-		Author:  author,
+		ID:        e.ID,
+		Title:     e.Title,
+		Content:   e.Content,
+		Author:    author,
+		IsDeleted: !e.DeletedAt.IsZero(),
 	}
 }
 

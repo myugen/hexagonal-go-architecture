@@ -17,6 +17,7 @@ type IArticle interface {
 	Find(e echo.Context) error
 	Create(e echo.Context) error
 	Update(e echo.Context) error
+	Delete(e echo.Context) error
 }
 
 type articleHandler struct {
@@ -29,7 +30,9 @@ func New(articleService services.IArticle) *articleHandler {
 
 func (h *articleHandler) Get(c echo.Context) error {
 	ctx := c.Request().Context()
-	id := c.Param("id")
+	param := c.Param("id")
+	aux, err := strconv.ParseUint(param, 10, 64)
+	id := uint(aux)
 	article, err := h.articleService.Get(ctx, id)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs getting an article")
@@ -85,5 +88,17 @@ func (h *articleHandler) Update(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs updating an article", err)
 	}
 
+	return c.JSON(http.StatusOK, responses.NewArticleResponse(article))
+}
+
+func (h *articleHandler) Delete(c echo.Context) error {
+	ctx := c.Request().Context()
+	param := c.Param("id")
+	aux, err := strconv.ParseUint(param, 10, 64)
+	id := uint(aux)
+	article, err := h.articleService.Delete(ctx, id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs getting an article")
+	}
 	return c.JSON(http.StatusOK, responses.NewArticleResponse(article))
 }

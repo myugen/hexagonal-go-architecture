@@ -20,5 +20,5 @@ func (b *Datetime) BeforeUpdate(ctx context.Context) (context.Context, error) {
 }
 
 type SoftDelete struct {
-	DeletedAt time.Time `pg:",soft_delete"`
+	DeletedAt pg.NullTime `pg:",soft_delete"`
 }

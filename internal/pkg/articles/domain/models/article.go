@@ -1,10 +1,11 @@
 package models
 
 type Article struct {
-	ID      uint    `json:"id"`
-	Title   string  `json:"title"`
-	Content string  `json:"content"`
-	Author  *Author `json:"author"`
+	ID        uint    `json:"id"`
+	Title     string  `json:"title"`
+	Content   string  `json:"content"`
+	Author    *Author `json:"author"`
+	IsDeleted bool    `json:"is_deleted"`
 }
 
 type ArticleQuery struct {

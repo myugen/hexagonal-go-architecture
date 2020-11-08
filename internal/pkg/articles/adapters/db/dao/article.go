@@ -18,10 +18,11 @@ func New(db *pg.DB) *article {
 	return &article{db: db}
 }
 
-func (d *article) FindByID(ctx context.Context, id string) (*models.Article, error) {
+func (d *article) FindByID(ctx context.Context, id uint) (*models.Article, error) {
 	eArticles := new(entities.ArticleEntity)
+	eArticles.ID = id
 	if err := d.db.Model(eArticles).
-		Where("article.id = ?", id).
+		WherePK().
 		Relation("Author").
 		Select(); err != nil {
 		return nil, err
@@ -72,6 +73,19 @@ func (d *article) Update(ctx context.Context, command *models.ArticleUpdateComma
 	if _, err := d.db.Model(eArticle).
 		WherePK().
 		UpdateNotZero(); err != nil {
+		return nil, err
+	}
+
+	return eArticle.ToModel(), nil
+}
+
+func (d *article) Delete(ctx context.Context, id uint) (*models.Article, error) {
+	eArticle := new(entities.ArticleEntity)
+	eArticle.ID = id
+	if _, err := d.db.Model(eArticle).
+		Relation("Author").
+		WherePK().
+		Delete(); err != nil {
 		return nil, err
 	}
 

@@ -7,8 +7,9 @@ import (
 )
 
 type IArticle interface {
-	FindByID(ctx context.Context, id string) (*models.Article, error)
+	FindByID(ctx context.Context, id uint) (*models.Article, error)
 	Find(ctx context.Context, query *models.ArticleQuery) ([]*models.Article, error)
 	Create(ctx context.Context, command *models.ArticleCreateCommand) (*models.Article, error)
 	Update(ctx context.Context, command *models.ArticleUpdateCommand) (*models.Article, error)
+	Delete(ctx context.Context, id uint) (*models.Article, error)
 }

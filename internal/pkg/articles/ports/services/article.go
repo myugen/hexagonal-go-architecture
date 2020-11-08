@@ -13,14 +13,15 @@ import (
 )
 
 var (
-	ErrExist = errors.New("Article already exist")
+	errAlreadyDeleted = errors.New("article was already deleted")
 )
 
 type IArticle interface {
-	Get(ctx context.Context, id string) (*models.Article, error)
+	Get(ctx context.Context, id uint) (*models.Article, error)
 	Find(ctx context.Context, query *models.ArticleQuery) ([]*models.Article, error)
 	Create(ctx context.Context, command *models.ArticleCreateCommand) (*models.Article, error)
 	Update(ctx context.Context, command *models.ArticleUpdateCommand) (*models.Article, error)
+	Delete(ctx context.Context, id uint) (*models.Article, error)
 }
 
 type article struct {
@@ -32,7 +33,7 @@ func New(articleRepository repositories.IArticle) *article {
 	return &article{articleRepository: articleRepository, validate: validator.New()}
 }
 
-func (s *article) Get(ctx context.Context, id string) (*models.Article, error) {
+func (s *article) Get(ctx context.Context, id uint) (*models.Article, error) {
 	result, err := s.articleRepository.FindByID(ctx, id)
 	if err != nil {
 		return nil, err
@@ -68,6 +69,23 @@ func (s *article) Update(ctx context.Context, command *models.ArticleUpdateComma
 	}
 
 	result, err := s.articleRepository.Update(ctx, command)
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (s *article) Delete(ctx context.Context, id uint) (*models.Article, error) {
+	result, err := s.articleRepository.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	if result.IsDeleted {
+		return nil, errAlreadyDeleted
+	}
+
+	result, err = s.articleRepository.Delete(ctx, result.ID)
 	if err != nil {
 		return nil, err
 	}
