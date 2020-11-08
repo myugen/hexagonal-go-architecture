@@ -60,7 +60,9 @@ func setupServer() *echo.Echo {
 		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{}))
 	}
 
-	routes.RegisterRoute(e)
+	apiRoute := e.Group("/api")
+
+	routes.RegisterRoute(apiRoute)
 	return e
 }
 

@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/go-pg/pg/v10 v10.5.0
+	github.com/go-pg/urlstruct v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/labstack/echo/v4 v4.1.17
 	github.com/magiconair/properties v1.8.4 // indirect

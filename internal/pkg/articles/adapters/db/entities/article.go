@@ -11,7 +11,7 @@ type Article struct {
 	ID      uint
 	Title   string
 	Content string
-	Author  *Author `pg:"rel:has-one"`
+	Author  *Author `pg:"rel:has-one,fk:author"`
 	types.Datetime
 }
 

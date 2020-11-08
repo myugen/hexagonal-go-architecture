@@ -1,7 +1,6 @@
 package constants
 
 const (
-	AppName             string = "App"
-	AppLabel            string = "app"
-	MigrationsDirectory        = "migrations"
+	AppName  string = "App"
+	AppLabel string = "app"
 )

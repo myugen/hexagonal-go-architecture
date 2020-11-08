@@ -8,4 +8,5 @@ import (
 
 type IArticle interface {
 	FindByID(ctx context.Context, id string) (*models.Article, error)
+	Find(ctx context.Context, query *models.ArticleQuery) ([]*models.Article, error)
 }

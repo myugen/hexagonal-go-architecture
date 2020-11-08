@@ -1,4 +1,4 @@
-package main
+package migrations
 
 import (
 	"github.com/go-pg/pg/v10/orm"

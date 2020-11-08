@@ -9,7 +9,7 @@ import (
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/services"
 )
 
-func RegisterRoute(e *echo.Echo) {
+func RegisterRoute(parent *echo.Group) {
 
 	articleRepository := dao.New(postgres.DB())
 
@@ -17,6 +17,7 @@ func RegisterRoute(e *echo.Echo) {
 
 	articleHandler := handlers.New(articleService)
 
-	articleRoute := e.Group("/articles")
+	articleRoute := parent.Group("/articles")
+	articleRoute.GET("", articleHandler.Find)
 	articleRoute.GET("/:id", articleHandler.Get)
 }

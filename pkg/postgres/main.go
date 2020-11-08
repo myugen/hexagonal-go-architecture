@@ -3,10 +3,9 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"os/exec"
 	"sync"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
+	"github.com/myugen/hexagonal-go-architecture/migrations"
 
 	"github.com/pkg/errors"
 
@@ -54,16 +53,14 @@ func create() error {
 		},
 	})
 
+	db.AddQueryHook(&LoggerHook{Verbose: viper.GetBool("verbose")})
+
 	if _, err := db.Exec("SELECT 1"); err != nil {
 		return errors.Wrap(err, "database connection failure")
 	}
 
-	cmd := exec.Command("sh", "-c", "go run migrations/*.go migrate")
-	if out, err := cmd.CombinedOutput(); err != nil {
-		logger.Log().Errorf("migration command output: %s\n", out)
-		return errors.Wrap(err, "migration execution failure")
-	} else {
-		logger.Log().Infof("migration status: %s", out)
+	if err := migrations.Migrate(db); err != nil {
+		return errors.Wrap(err, "database migration failure")
 	}
 
 	return nil
