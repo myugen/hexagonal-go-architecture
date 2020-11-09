@@ -23,4 +23,5 @@ func RegisterRoute(parent *echo.Group) {
 	articleRoute.POST("", articleHandler.Create)
 	articleRoute.PUT("/:id", articleHandler.Update)
 	articleRoute.DELETE("/:id", articleHandler.Delete)
+	articleRoute.PATCH("/:id/recover", articleHandler.Recover)
 }

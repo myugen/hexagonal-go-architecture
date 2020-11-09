@@ -31,6 +31,20 @@ func (d *article) FindByID(ctx context.Context, id uint) (*models.Article, error
 	return eArticles.ToModel(), nil
 }
 
+func (d *article) FindDeletedByID(ctx context.Context, id uint) (*models.Article, error) {
+	eArticles := new(entities.ArticleEntity)
+	eArticles.ID = id
+	if err := d.db.Model(eArticles).
+		WherePK().
+		AllWithDeleted().
+		Relation("Author").
+		Select(); err != nil {
+		return nil, err
+	}
+
+	return eArticles.ToModel(), nil
+}
+
 func (d *article) Find(ctx context.Context, query *models.ArticleQuery) ([]*models.Article, error) {
 	eArticles := new([]*entities.ArticleEntity)
 	fArticle := types.NewArticleFilter(query)
@@ -86,6 +100,28 @@ func (d *article) Delete(ctx context.Context, id uint) (*models.Article, error) 
 		Relation("Author").
 		WherePK().
 		Delete(); err != nil {
+		return nil, err
+	}
+
+	return eArticle.ToModel(), nil
+}
+
+func (d *article) Recover(ctx context.Context, id uint) (*models.Article, error) {
+	eArticle := new(entities.ArticleEntity)
+	eArticle.ID = id
+	if err := d.db.Model(eArticle).
+		Relation("Author").
+		WherePK().
+		AllWithDeleted().
+		Select(); err != nil {
+		return nil, err
+	}
+
+	eArticle.DeletedAt = pg.NullTime{}
+	if _, err := d.db.Model(eArticle).
+		WherePK().
+		AllWithDeleted().
+		Update(); err != nil {
 		return nil, err
 	}
 

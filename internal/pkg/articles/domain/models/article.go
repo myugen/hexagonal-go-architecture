@@ -9,10 +9,11 @@ type Article struct {
 }
 
 type ArticleQuery struct {
-	Offset   int    `json:"offset"`
-	Limit    int    `json:"limit"`
-	AuthorID uint   `json:"author_id"`
-	Title    string `json:"title"`
+	Offset          int    `json:"offset"`
+	Limit           int    `json:"limit"`
+	AuthorID        uint   `json:"author_id"`
+	Title           string `json:"title"`
+	IncludedDeleted bool   `json:"included_deleted"`
 }
 
 type ArticleCreateCommand struct {

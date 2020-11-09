@@ -35,10 +35,11 @@ func (r *ArticleUpdateRequest) ToCommand() *models.ArticleUpdateCommand {
 }
 
 type ArticleQueryParams struct {
-	Offset   int    `json:"offset"`
-	Limit    int    `json:"limit"`
-	AuthorID uint   `json:"author_id"`
-	Title    string `json:"title"`
+	Offset          int    `json:"offset"`
+	Limit           int    `json:"limit"`
+	AuthorID        uint   `json:"author_id"`
+	Title           string `json:"title"`
+	IncludedDeleted bool   `json:"included_deleted"`
 }
 
 func NewArticleQueryParams(values url.Values) *ArticleQueryParams {
@@ -60,15 +61,17 @@ func NewArticleQueryParams(values url.Values) *ArticleQueryParams {
 	}
 
 	qpArticle.Title = values.Get("title")
+	qpArticle.IncludedDeleted, _ = strconv.ParseBool(values.Get("included_deleted"))
 
 	return qpArticle
 }
 
 func (a *ArticleQueryParams) ToArticleQuery() *models.ArticleQuery {
 	return &models.ArticleQuery{
-		Offset:   a.Offset,
-		Limit:    a.Limit,
-		AuthorID: a.AuthorID,
-		Title:    a.Title,
+		Offset:          a.Offset,
+		Limit:           a.Limit,
+		AuthorID:        a.AuthorID,
+		Title:           a.Title,
+		IncludedDeleted: a.IncludedDeleted,
 	}
 }

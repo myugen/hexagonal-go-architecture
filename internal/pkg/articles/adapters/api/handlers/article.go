@@ -18,6 +18,7 @@ type IArticle interface {
 	Create(e echo.Context) error
 	Update(e echo.Context) error
 	Delete(e echo.Context) error
+	Recover(e echo.Context) error
 }
 
 type articleHandler struct {
@@ -98,7 +99,19 @@ func (h *articleHandler) Delete(c echo.Context) error {
 	id := uint(aux)
 	article, err := h.articleService.Delete(ctx, id)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs getting an article")
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs deleting an article")
+	}
+	return c.JSON(http.StatusOK, responses.NewArticleResponse(article))
+}
+
+func (h *articleHandler) Recover(c echo.Context) error {
+	ctx := c.Request().Context()
+	param := c.Param("id")
+	aux, err := strconv.ParseUint(param, 10, 64)
+	id := uint(aux)
+	article, err := h.articleService.Recover(ctx, id)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs recovering an article")
 	}
 	return c.JSON(http.StatusOK, responses.NewArticleResponse(article))
 }

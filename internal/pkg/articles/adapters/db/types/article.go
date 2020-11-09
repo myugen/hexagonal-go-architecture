@@ -6,18 +6,20 @@ import (
 )
 
 type ArticleFilter struct {
-	Limit    int
-	Offset   int
-	AuthorID uint
-	Title    string
+	Limit           int
+	Offset          int
+	AuthorID        uint
+	Title           string
+	IncludedDeleted bool
 }
 
 func NewArticleFilter(query *models.ArticleQuery) *ArticleFilter {
 	return &ArticleFilter{
-		Limit:    query.Limit,
-		Offset:   query.Offset * query.Limit,
-		AuthorID: query.AuthorID,
-		Title:    query.Title,
+		Limit:           query.Limit,
+		Offset:          query.Offset * query.Limit,
+		AuthorID:        query.AuthorID,
+		Title:           query.Title,
+		IncludedDeleted: query.IncludedDeleted,
 	}
 }
 
@@ -32,6 +34,10 @@ func (a *ArticleFilter) Where(q *orm.Query) (*orm.Query, error) {
 
 	if a.Limit > 0 {
 		q.Limit(a.Limit).Offset(a.Offset)
+	}
+
+	if a.IncludedDeleted {
+		q.AllWithDeleted()
 	}
 
 	return q, nil
