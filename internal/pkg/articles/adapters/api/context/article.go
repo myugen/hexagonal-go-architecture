@@ -6,17 +6,24 @@ import (
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/db/dao"
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/repositories"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 type ArticleAPIContext struct {
 	echo.Context
 	db                *pg.DB
 	tx                *pg.Tx
+	log               *logrus.Logger
 	articleRepository repositories.IArticle
 }
 
-func NewArticleAPIContext(c echo.Context, db *pg.DB) *ArticleAPIContext {
-	return &ArticleAPIContext{Context: c, db: db, articleRepository: dao.New()}
+func NewArticleAPIContext(c echo.Context, db *pg.DB, log *logrus.Logger) *ArticleAPIContext {
+	return &ArticleAPIContext{
+		Context:           c,
+		db:                db,
+		articleRepository: dao.New(),
+		log:               log,
+	}
 }
 
 func (a *ArticleAPIContext) ArticleRepository() repositories.IArticle {
@@ -29,6 +36,10 @@ func (a *ArticleAPIContext) Transaction() *pg.Tx {
 
 func (a *ArticleAPIContext) DB() *pg.DB {
 	return a.db
+}
+
+func (a *ArticleAPIContext) Log() *logrus.Logger {
+	return a.log
 }
 
 func (a *ArticleAPIContext) BeginTransaction() (*pg.Tx, error) {
