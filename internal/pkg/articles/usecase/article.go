@@ -22,15 +22,15 @@ type ArticleContext interface {
 	repositories.ArticleRepositoryContext
 }
 
-type article struct {
+type articleUsecase struct {
 	validate *validator.Validate
 }
 
-func NewArticleUsecase() *article {
-	return &article{validate: validator.New()}
+func NewArticleUsecase() *articleUsecase {
+	return &articleUsecase{validate: validator.New()}
 }
 
-func (s *article) Get(ctx ArticleContext, id uint) (*models.Article, error) {
+func (u *articleUsecase) Get(ctx ArticleContext, id uint) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "get")
 	logOp.Infof("Request to get an article: %d", id)
 	result, err := ctx.ArticleRepository().FindByID(ctx, id)
@@ -41,7 +41,7 @@ func (s *article) Get(ctx ArticleContext, id uint) (*models.Article, error) {
 	return result, nil
 }
 
-func (s *article) Find(ctx ArticleContext, query *models.ArticleQuery) ([]*models.Article, error) {
+func (u *articleUsecase) Find(ctx ArticleContext, query *models.ArticleQuery) ([]*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "find")
 	logOp.Infof("Request to find articles: %v", query)
 	result, err := ctx.ArticleRepository().Find(ctx, query)
@@ -53,11 +53,11 @@ func (s *article) Find(ctx ArticleContext, query *models.ArticleQuery) ([]*model
 	return result, err
 }
 
-func (s *article) Create(ctx ArticleContext, command *models.ArticleCreateCommand) (*models.Article, error) {
+func (u *articleUsecase) Create(ctx ArticleContext, command *models.ArticleCreateCommand) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "create")
 	logOp.Info("Request to create an article")
 
-	if err := s.validate.Struct(command); err != nil {
+	if err := u.validate.Struct(command); err != nil {
 		logOp.WithField("error", err).Errorf("article service error")
 		return nil, err
 	}
@@ -71,11 +71,11 @@ func (s *article) Create(ctx ArticleContext, command *models.ArticleCreateComman
 	return result, nil
 }
 
-func (s *article) Update(ctx ArticleContext, command *models.ArticleUpdateCommand) (*models.Article, error) {
+func (u *articleUsecase) Update(ctx ArticleContext, command *models.ArticleUpdateCommand) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "update")
 	logOp.Infof("Request to update an article: %d", command.ID)
 
-	if err := s.validate.Struct(command); err != nil {
+	if err := u.validate.Struct(command); err != nil {
 		logOp.WithField("error", err).Errorf("article service error")
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (s *article) Update(ctx ArticleContext, command *models.ArticleUpdateComman
 	return result, nil
 }
 
-func (s *article) Delete(ctx ArticleContext, id uint) (*models.Article, error) {
+func (u *articleUsecase) Delete(ctx ArticleContext, id uint) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "delete")
 	logOp.Infof("Request to delete an article: %d", id)
 
@@ -112,7 +112,7 @@ func (s *article) Delete(ctx ArticleContext, id uint) (*models.Article, error) {
 	return result, nil
 }
 
-func (s *article) Recover(ctx ArticleContext, id uint) (*models.Article, error) {
+func (u *articleUsecase) Recover(ctx ArticleContext, id uint) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "recover")
 	logOp.Infof("Request to recover an article: %d", id)
 
