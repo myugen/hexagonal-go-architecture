@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/api/context"
+
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/api/requests"
 
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/api/responses"
@@ -30,7 +32,7 @@ func New(articleService services.IArticle) *articleHandler {
 }
 
 func (h *articleHandler) Get(c echo.Context) error {
-	ctx := c.Request().Context()
+	ctx := c.(*context.ArticleAPIContext)
 	param := c.Param("id")
 	aux, err := strconv.ParseUint(param, 10, 64)
 	id := uint(aux)
@@ -42,7 +44,7 @@ func (h *articleHandler) Get(c echo.Context) error {
 }
 
 func (h *articleHandler) Find(c echo.Context) error {
-	ctx := c.Request().Context()
+	ctx := c.(*context.ArticleAPIContext)
 	query := c.QueryParams()
 	qpArticle := requests.NewArticleQueryParams(query)
 	qArticle := qpArticle.ToArticleQuery()
@@ -60,7 +62,7 @@ func (h *articleHandler) Find(c echo.Context) error {
 }
 
 func (h *articleHandler) Create(c echo.Context) error {
-	ctx := c.Request().Context()
+	ctx := c.(*context.ArticleAPIContext)
 	body := new(requests.ArticleCreateRequest)
 	if err := c.Bind(body); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs creating an article: %s")
@@ -75,7 +77,7 @@ func (h *articleHandler) Create(c echo.Context) error {
 }
 
 func (h *articleHandler) Update(c echo.Context) error {
-	ctx := c.Request().Context()
+	ctx := c.(*context.ArticleAPIContext)
 	id := c.Param("id")
 	body := new(requests.ArticleUpdateRequest)
 	if err := c.Bind(body); err != nil {
@@ -93,7 +95,7 @@ func (h *articleHandler) Update(c echo.Context) error {
 }
 
 func (h *articleHandler) Delete(c echo.Context) error {
-	ctx := c.Request().Context()
+	ctx := c.(*context.ArticleAPIContext)
 	param := c.Param("id")
 	aux, err := strconv.ParseUint(param, 10, 64)
 	id := uint(aux)
@@ -105,7 +107,7 @@ func (h *articleHandler) Delete(c echo.Context) error {
 }
 
 func (h *articleHandler) Recover(c echo.Context) error {
-	ctx := c.Request().Context()
+	ctx := c.(*context.ArticleAPIContext)
 	param := c.Param("id")
 	aux, err := strconv.ParseUint(param, 10, 64)
 	id := uint(aux)

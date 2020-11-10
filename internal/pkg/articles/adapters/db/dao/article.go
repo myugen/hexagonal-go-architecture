@@ -1,7 +1,7 @@
 package dao
 
 import (
-	"context"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/repositories"
 
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/db/entities"
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/db/types"
@@ -10,18 +10,16 @@ import (
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/domain/models"
 )
 
-type article struct {
-	db *pg.DB
+type article struct{}
+
+func New() *article {
+	return &article{}
 }
 
-func New(db *pg.DB) *article {
-	return &article{db: db}
-}
-
-func (d *article) FindByID(ctx context.Context, id uint) (*models.Article, error) {
+func (d *article) FindByID(ctx repositories.ArticleRepositoryContext, id uint) (*models.Article, error) {
 	eArticles := new(entities.ArticleEntity)
 	eArticles.ID = id
-	if err := d.db.Model(eArticles).
+	if err := ctx.Transaction().Model(eArticles).
 		WherePK().
 		Relation("Author").
 		Select(); err != nil {
@@ -31,10 +29,10 @@ func (d *article) FindByID(ctx context.Context, id uint) (*models.Article, error
 	return eArticles.ToModel(), nil
 }
 
-func (d *article) FindDeletedByID(ctx context.Context, id uint) (*models.Article, error) {
+func (d *article) FindDeletedByID(ctx repositories.ArticleRepositoryContext, id uint) (*models.Article, error) {
 	eArticles := new(entities.ArticleEntity)
 	eArticles.ID = id
-	if err := d.db.Model(eArticles).
+	if err := ctx.Transaction().Model(eArticles).
 		WherePK().
 		AllWithDeleted().
 		Relation("Author").
@@ -45,10 +43,10 @@ func (d *article) FindDeletedByID(ctx context.Context, id uint) (*models.Article
 	return eArticles.ToModel(), nil
 }
 
-func (d *article) Find(ctx context.Context, query *models.ArticleQuery) ([]*models.Article, error) {
+func (d *article) Find(ctx repositories.ArticleRepositoryContext, query *models.ArticleQuery) ([]*models.Article, error) {
 	eArticles := new([]*entities.ArticleEntity)
 	fArticle := types.NewArticleFilter(query)
-	if err := d.db.Model(eArticles).
+	if err := ctx.Transaction().Model(eArticles).
 		Relation("Author").
 		Apply(fArticle.Where).
 		Select(); err != nil {
@@ -63,9 +61,9 @@ func (d *article) Find(ctx context.Context, query *models.ArticleQuery) ([]*mode
 	return articles, nil
 }
 
-func (d *article) Create(ctx context.Context, command *models.ArticleCreateCommand) (*models.Article, error) {
+func (d *article) Create(ctx repositories.ArticleRepositoryContext, command *models.ArticleCreateCommand) (*models.Article, error) {
 	eArticle := entities.NewArticleEntity(command)
-	if _, err := d.db.Model(eArticle).
+	if _, err := ctx.Transaction().Model(eArticle).
 		Insert(); err != nil {
 		return nil, err
 	}
@@ -73,10 +71,10 @@ func (d *article) Create(ctx context.Context, command *models.ArticleCreateComma
 	return eArticle.ToModel(), nil
 }
 
-func (d *article) Update(ctx context.Context, command *models.ArticleUpdateCommand) (*models.Article, error) {
+func (d *article) Update(ctx repositories.ArticleRepositoryContext, command *models.ArticleUpdateCommand) (*models.Article, error) {
 	eArticle := new(entities.ArticleEntity)
 	eArticle.ID = command.ID
-	if err := d.db.Model(eArticle).
+	if err := ctx.Transaction().Model(eArticle).
 		Relation("Author").
 		WherePK().
 		Select(); err != nil {
@@ -84,7 +82,7 @@ func (d *article) Update(ctx context.Context, command *models.ArticleUpdateComma
 	}
 
 	eArticle.UpdateFrom(command)
-	if _, err := d.db.Model(eArticle).
+	if _, err := ctx.Transaction().Model(eArticle).
 		WherePK().
 		UpdateNotZero(); err != nil {
 		return nil, err
@@ -93,10 +91,10 @@ func (d *article) Update(ctx context.Context, command *models.ArticleUpdateComma
 	return eArticle.ToModel(), nil
 }
 
-func (d *article) Delete(ctx context.Context, id uint) (*models.Article, error) {
+func (d *article) Delete(ctx repositories.ArticleRepositoryContext, id uint) (*models.Article, error) {
 	eArticle := new(entities.ArticleEntity)
 	eArticle.ID = id
-	if _, err := d.db.Model(eArticle).
+	if _, err := ctx.Transaction().Model(eArticle).
 		Relation("Author").
 		WherePK().
 		Delete(); err != nil {
@@ -106,10 +104,10 @@ func (d *article) Delete(ctx context.Context, id uint) (*models.Article, error) 
 	return eArticle.ToModel(), nil
 }
 
-func (d *article) Recover(ctx context.Context, id uint) (*models.Article, error) {
+func (d *article) Recover(ctx repositories.ArticleRepositoryContext, id uint) (*models.Article, error) {
 	eArticle := new(entities.ArticleEntity)
 	eArticle.ID = id
-	if err := d.db.Model(eArticle).
+	if err := ctx.Transaction().Model(eArticle).
 		Relation("Author").
 		WherePK().
 		AllWithDeleted().
@@ -118,7 +116,7 @@ func (d *article) Recover(ctx context.Context, id uint) (*models.Article, error)
 	}
 
 	eArticle.DeletedAt = pg.NullTime{}
-	if _, err := d.db.Model(eArticle).
+	if _, err := ctx.Transaction().Model(eArticle).
 		WherePK().
 		AllWithDeleted().
 		Update(); err != nil {
