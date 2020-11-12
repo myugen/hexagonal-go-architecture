@@ -3,14 +3,16 @@ package logger
 import (
 	"sync"
 
+	"github.com/labstack/gommon/log"
+
 	"github.com/spf13/viper"
 
 	"github.com/sirupsen/logrus"
 )
 
 var (
-	log  *logrus.Logger
-	once sync.Once
+	logger *Logger
+	once   sync.Once
 )
 
 func Initialize() {
@@ -19,18 +21,18 @@ func Initialize() {
 	})
 }
 
-func Log() *logrus.Logger {
-	return log
+func Log() *Logger {
+	return logger
 }
 
 func create() {
-	log = logrus.New()
+	logger = &Logger{logrus.New()}
 	if viper.GetBool("verbose") {
-		log.SetLevel(logrus.DebugLevel)
+		logger.SetLevel(log.DEBUG)
 	} else {
-		log.SetLevel(logrus.InfoLevel)
+		log.SetLevel(log.INFO)
 	}
-	log.SetFormatter(&logrus.TextFormatter{
+	logger.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: true,
 	})
 }

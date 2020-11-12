@@ -8,6 +8,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/myugen/hexagonal-go-architecture/pkg/echo/middlewares"
+
 	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 
 	"github.com/spf13/viper"
@@ -35,6 +37,7 @@ var (
 )
 
 func run(cmd *cobra.Command, args []string) {
+	logger.Initialize()
 	logger.Log().Debug("Connecting postgres database")
 	if err := postgres.Initialize(); err != nil {
 		logger.Log().Fatalf("Error on database connection: %s", err)
@@ -54,10 +57,11 @@ func run(cmd *cobra.Command, args []string) {
 
 func setupServer() *echo.Echo {
 	e := echo.New()
+	e.Logger = logger.Log()
 	e.Use(middleware.CORS())
 	e.Use(middleware.Gzip())
 	if viper.GetBool("verbose") {
-		e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{}))
+		e.Use(middlewares.Logger())
 	}
 
 	apiRoute := e.Group("/api")

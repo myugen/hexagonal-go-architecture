@@ -6,7 +6,6 @@ import (
 	"github.com/myugen/hexagonal-go-architecture/utils/constants"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -31,17 +30,12 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	// Logger initialization
-	// ---------------------
-	logger.Initialize()
-	// ---------------------
 
 	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", fmt.Sprintf("config file path (default lookups [./config.yml, $HOME/.%s/config.yml, /etc/%s/config.yml])", constants.AppLabel, constants.AppLabel))
 	rootCmd.PersistentFlags().StringVarP(&userLicense, "license", "l", "MIT", "name of license for the project")
 	viper.SetDefault("author", "Miguel Cabrera <me@mcabsan.dev>")
 	viper.SetDefault("license", "MIT")
 	viper.SetDefault("version", "0.0.1")
-	viper.SetDefault("verbose", false)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(upCmd)
 }

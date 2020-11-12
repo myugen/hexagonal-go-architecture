@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/repositories"
+	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 
 	"github.com/sirupsen/logrus"
 
@@ -135,6 +136,6 @@ func (u *articleUsecase) Recover(ctx ArticleContext, id uint) (*models.Article, 
 	return result, nil
 }
 
-func initLog(log *logrus.Logger) *logrus.Entry {
+func initLog(log *logger.Logger) *logrus.Entry {
 	return log.WithFields(map[string]interface{}{"module": "service", "domain": "article"})
 }

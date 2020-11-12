@@ -2,11 +2,11 @@ package context
 
 import (
 	"github.com/go-pg/pg/v10"
-	"github.com/sirupsen/logrus"
+	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 )
 
 type Context interface {
 	Transaction() *pg.Tx
 	DB() *pg.DB
-	Log() *logrus.Logger
+	Log() *logger.Logger
 }

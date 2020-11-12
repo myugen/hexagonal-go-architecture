@@ -5,19 +5,19 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/db/dao"
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/repositories"
+	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 )
 
 type ArticleAPIContext struct {
 	echo.Context
 	db                *pg.DB
 	tx                *pg.Tx
-	log               *logrus.Logger
+	log               *logger.Logger
 	articleRepository repositories.IArticle
 }
 
-func NewArticleAPIContext(c echo.Context, db *pg.DB, log *logrus.Logger) *ArticleAPIContext {
+func NewArticleAPIContext(c echo.Context, db *pg.DB, log *logger.Logger) *ArticleAPIContext {
 	return &ArticleAPIContext{
 		Context:           c,
 		db:                db,
@@ -38,7 +38,7 @@ func (a *ArticleAPIContext) DB() *pg.DB {
 	return a.db
 }
 
-func (a *ArticleAPIContext) Log() *logrus.Logger {
+func (a *ArticleAPIContext) Log() *logger.Logger {
 	return a.log
 }
 

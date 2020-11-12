@@ -19,15 +19,15 @@ func (l *LoggerHook) BeforeQuery(ctx context.Context, q *pg.QueryEvent) (context
 func (l *LoggerHook) AfterQuery(ctx context.Context, q *pg.QueryEvent) error {
 	query, _ := q.FormattedQuery()
 	log := logger.Log()
-	var queryLog = log.WithField("module", "database")
-	if l.Verbose {
-		queryLog = queryLog.WithField("query", string(query))
-	}
+	var queryLog = log.WithFields(map[string]interface{}{
+		"module":    "database",
+		"statement": string(query),
+	})
 
 	if q.Err != nil {
 		queryLog.WithField("error", q.Err).Error("database statement error")
 	} else if l.Verbose {
-		queryLog.Info("database statement executed")
+		queryLog.Debug("database statement executed")
 	}
 
 	return nil
