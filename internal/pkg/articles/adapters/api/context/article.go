@@ -4,7 +4,9 @@ import (
 	"github.com/go-pg/pg/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/db/dao"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/validator"
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/repositories"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/validators"
 	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 	"github.com/pkg/errors"
 )
@@ -15,19 +17,25 @@ type ArticleAPIContext struct {
 	tx                *pg.Tx
 	log               *logger.Logger
 	articleRepository repositories.IArticle
+	articleValidator  validators.IArticle
 }
 
 func NewArticleAPIContext(c echo.Context, db *pg.DB, log *logger.Logger) *ArticleAPIContext {
 	return &ArticleAPIContext{
 		Context:           c,
 		db:                db,
-		articleRepository: dao.New(),
+		articleRepository: dao.NewArticleDAO(),
 		log:               log,
+		articleValidator:  validator.NewArticleValidator(),
 	}
 }
 
 func (a *ArticleAPIContext) ArticleRepository() repositories.IArticle {
 	return a.articleRepository
+}
+
+func (a *ArticleAPIContext) ArticleValidator() validators.IArticle {
+	return a.articleValidator
 }
 
 func (a *ArticleAPIContext) Transaction() *pg.Tx {

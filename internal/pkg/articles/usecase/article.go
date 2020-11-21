@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/repositories"
+	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/ports/validators"
 	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 
 	"github.com/sirupsen/logrus"
@@ -9,17 +10,11 @@ import (
 	"github.com/go-playground/validator/v10"
 
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/domain/models"
-
-	"github.com/pkg/errors"
-)
-
-var (
-	errAlreadyDeleted = errors.New("article was already deleted")
-	errNotDeleted     = errors.New("article is not deleted")
 )
 
 type ArticleContext interface {
 	ArticleRepository() repositories.IArticle
+	ArticleValidator() validators.IArticle
 	repositories.ArticleRepositoryContext
 }
 
@@ -58,7 +53,7 @@ func (u *articleUsecase) Create(ctx ArticleContext, command *models.ArticleCreat
 	logOp := initLog(ctx.Log()).WithField("operation", "create")
 	logOp.Info("Request to create an article")
 
-	if err := u.validate.Struct(command); err != nil {
+	if err := ctx.ArticleValidator().ValidateCreate(command); err != nil {
 		logOp.WithField("error", err).Errorf("article service error")
 		return nil, err
 	}
@@ -76,7 +71,7 @@ func (u *articleUsecase) Update(ctx ArticleContext, command *models.ArticleUpdat
 	logOp := initLog(ctx.Log()).WithField("operation", "update")
 	logOp.Infof("Request to update an article: %d", command.ID)
 
-	if err := u.validate.Struct(command); err != nil {
+	if err := ctx.ArticleValidator().ValidateUpdate(command); err != nil {
 		logOp.WithField("error", err).Errorf("article service error")
 		return nil, err
 	}
@@ -99,9 +94,9 @@ func (u *articleUsecase) Delete(ctx ArticleContext, id uint) (*models.Article, e
 		logOp.WithField("error", err).Errorf("article service error")
 		return nil, err
 	}
-	if result.IsDeleted {
-		logOp.WithField("error", errAlreadyDeleted).Errorf("article service error")
-		return nil, errAlreadyDeleted
+	if err = ctx.ArticleValidator().ValidateDelete(result); err != nil {
+		logOp.WithField("error", err).Errorf("article service error")
+		return nil, err
 	}
 
 	result, err = ctx.ArticleRepository().Delete(ctx, result.ID)
@@ -122,9 +117,10 @@ func (u *articleUsecase) Recover(ctx ArticleContext, id uint) (*models.Article, 
 		logOp.WithField("error", err).Errorf("article service error")
 		return nil, err
 	}
-	if !result.IsDeleted {
-		logOp.WithField("error", errNotDeleted).Errorf("article service error")
-		return nil, errNotDeleted
+
+	if err = ctx.ArticleValidator().ValidateRecover(result); err != nil {
+		logOp.WithField("error", err).Errorf("article service error")
+		return nil, err
 	}
 
 	result, err = ctx.ArticleRepository().Recover(ctx, result.ID)

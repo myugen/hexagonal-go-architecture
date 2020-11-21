@@ -12,7 +12,7 @@ import (
 
 type article struct{}
 
-func New() *article {
+func NewArticleDAO() *article {
 	return &article{}
 }
 
