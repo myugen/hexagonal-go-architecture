@@ -20,7 +20,7 @@ import (
 
 	"github.com/labstack/echo/v4/middleware"
 
-	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/api/routes"
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/api/routes"
 
 	"github.com/labstack/echo/v4"
 
