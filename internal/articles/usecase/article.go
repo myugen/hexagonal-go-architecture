@@ -7,8 +7,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"github.com/go-playground/validator/v10"
-
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
 )
 
@@ -18,12 +16,10 @@ type ArticleContext interface {
 	repositories.ArticleRepositoryContext
 }
 
-type articleUsecase struct {
-	validate *validator.Validate
-}
+type articleUsecase struct{}
 
 func NewArticleUsecase() *articleUsecase {
-	return &articleUsecase{validate: validator.New()}
+	return &articleUsecase{}
 }
 
 func (u *articleUsecase) Get(ctx ArticleContext, id uint) (*models.Article, error) {
