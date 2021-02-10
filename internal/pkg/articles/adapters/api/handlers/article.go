@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/myugen/hexagonal-go-architecture/pkg/decoders"
+
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/api/context"
 
 	"github.com/myugen/hexagonal-go-architecture/internal/pkg/articles/adapters/api/requests"
@@ -45,8 +47,11 @@ func (h *articleHandler) Get(c echo.Context) error {
 
 func (h *articleHandler) Find(c echo.Context) error {
 	ctx := c.(*context.ArticleAPIContext)
-	query := c.QueryParams()
-	qpArticle := requests.NewArticleQueryParams(query)
+	decoder := decoders.ParamsDecoder()
+	qpArticle := new(requests.ArticleQueryParams)
+	if err := decoder.Decode(qpArticle, ctx.QueryParams()); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "An error occurs getting articles")
+	}
 	qArticle := qpArticle.ToArticleQuery()
 	articles, err := h.articleService.Find(ctx, qArticle)
 	if err != nil {
