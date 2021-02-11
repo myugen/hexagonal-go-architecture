@@ -1,6 +1,8 @@
 package logger
 
 import (
+	"flag"
+	"io/ioutil"
 	"sync"
 
 	"github.com/labstack/gommon/log"
@@ -15,13 +17,10 @@ var (
 	once   sync.Once
 )
 
-func Initialize() {
+func Log() *Logger {
 	once.Do(func() {
 		create()
 	})
-}
-
-func Log() *Logger {
 	return logger
 }
 
@@ -35,4 +34,8 @@ func create() {
 	logger.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: true,
 	})
+
+	if flag.Lookup("test.v") != nil {
+		logger.Out = ioutil.Discard
+	}
 }

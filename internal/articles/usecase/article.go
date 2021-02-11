@@ -10,7 +10,7 @@ import (
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
 )
 
-type ArticleContext interface {
+type ArticleUsecaseContext interface {
 	ArticleRepository() repositories.IArticle
 	ArticleValidator() validators.IArticle
 	repositories.ArticleRepositoryContext
@@ -22,7 +22,7 @@ func NewArticleUsecase() *articleUsecase {
 	return &articleUsecase{}
 }
 
-func (u *articleUsecase) Get(ctx ArticleContext, id uint) (*models.Article, error) {
+func (u *articleUsecase) Get(ctx ArticleUsecaseContext, id uint) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "get")
 	logOp.Infof("Request to get an article: %d", id)
 	result, err := ctx.ArticleRepository().FindByID(ctx, id)
@@ -33,7 +33,7 @@ func (u *articleUsecase) Get(ctx ArticleContext, id uint) (*models.Article, erro
 	return result, nil
 }
 
-func (u *articleUsecase) Find(ctx ArticleContext, query *models.ArticleQuery) ([]*models.Article, error) {
+func (u *articleUsecase) Find(ctx ArticleUsecaseContext, query *models.ArticleQuery) ([]*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "find")
 	logOp.Infof("Request to find articles: %v", query)
 	result, err := ctx.ArticleRepository().Find(ctx, query)
@@ -45,7 +45,7 @@ func (u *articleUsecase) Find(ctx ArticleContext, query *models.ArticleQuery) ([
 	return result, err
 }
 
-func (u *articleUsecase) Create(ctx ArticleContext, command *models.ArticleCreateCommand) (*models.Article, error) {
+func (u *articleUsecase) Create(ctx ArticleUsecaseContext, command *models.ArticleCreateCommand) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "create")
 	logOp.Info("Request to create an article")
 
@@ -63,7 +63,7 @@ func (u *articleUsecase) Create(ctx ArticleContext, command *models.ArticleCreat
 	return result, nil
 }
 
-func (u *articleUsecase) Update(ctx ArticleContext, command *models.ArticleUpdateCommand) (*models.Article, error) {
+func (u *articleUsecase) Update(ctx ArticleUsecaseContext, command *models.ArticleUpdateCommand) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "update")
 	logOp.Infof("Request to update an article: %d", command.ID)
 
@@ -81,7 +81,7 @@ func (u *articleUsecase) Update(ctx ArticleContext, command *models.ArticleUpdat
 	return result, nil
 }
 
-func (u *articleUsecase) Delete(ctx ArticleContext, id uint) (*models.Article, error) {
+func (u *articleUsecase) Delete(ctx ArticleUsecaseContext, id uint) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "delete")
 	logOp.Infof("Request to delete an article: %d", id)
 
@@ -104,7 +104,7 @@ func (u *articleUsecase) Delete(ctx ArticleContext, id uint) (*models.Article, e
 	return result, nil
 }
 
-func (u *articleUsecase) Recover(ctx ArticleContext, id uint) (*models.Article, error) {
+func (u *articleUsecase) Recover(ctx ArticleUsecaseContext, id uint) (*models.Article, error) {
 	logOp := initLog(ctx.Log()).WithField("operation", "recover")
 	logOp.Infof("Request to recover an article: %d", id)
 

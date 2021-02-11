@@ -9,26 +9,30 @@ import (
 )
 
 type LoggerHook struct {
-	Verbose bool
+	verbose bool
+	logger  *logger.Logger
 }
 
-func (l *LoggerHook) BeforeQuery(ctx context.Context, q *pg.QueryEvent) (context.Context, error) {
+func (l *LoggerHook) BeforeQuery(ctx context.Context, _ *pg.QueryEvent) (context.Context, error) {
 	return ctx, nil
 }
 
-func (l *LoggerHook) AfterQuery(ctx context.Context, q *pg.QueryEvent) error {
+func (l *LoggerHook) AfterQuery(_ context.Context, q *pg.QueryEvent) error {
 	query, _ := q.FormattedQuery()
-	log := logger.Log()
-	var queryLog = log.WithFields(map[string]interface{}{
+	var queryLog = l.logger.WithFields(map[string]interface{}{
 		"module":    "database",
 		"statement": string(query),
 	})
 
 	if q.Err != nil {
 		queryLog.WithField("error", q.Err).Error("database statement error")
-	} else if l.Verbose {
+	} else if l.verbose {
 		queryLog.Debug("database statement executed")
 	}
 
 	return nil
+}
+
+func NewLoggerHook(logger *logger.Logger, verbose bool) *LoggerHook {
+	return &LoggerHook{verbose, logger}
 }

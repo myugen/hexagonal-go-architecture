@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
+
 	"github.com/myugen/hexagonal-go-architecture/migrations"
 
 	"github.com/pkg/errors"
@@ -53,7 +55,8 @@ func create() error {
 		},
 	})
 
-	db.AddQueryHook(&LoggerHook{Verbose: viper.GetBool("verbose")})
+	verbose := viper.GetBool("verbose")
+	db.AddQueryHook(NewLoggerHook(logger.Log(), verbose))
 
 	if _, err := db.Exec("SELECT 1"); err != nil {
 		return errors.Wrap(err, "database connection failure")

@@ -50,6 +50,13 @@ func (a *ArticleAPIContext) Log() *logger.Logger {
 	return a.log
 }
 
+func (a *ArticleAPIContext) CommitTransaction() error {
+	return a.tx.Commit()
+}
+func (a *ArticleAPIContext) RollbackTransaction() error {
+	return a.tx.Rollback()
+}
+
 func (a *ArticleAPIContext) BeginTransaction() (*pg.Tx, error) {
 	tx, err := a.db.Begin()
 	if err != nil {

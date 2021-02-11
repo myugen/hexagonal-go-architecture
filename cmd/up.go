@@ -36,8 +36,7 @@ var (
 	}
 )
 
-func run(cmd *cobra.Command, args []string) {
-	logger.Initialize()
+func run(_ *cobra.Command, _ []string) {
 	logger.Log().Debug("Connecting postgres database")
 	if err := postgres.Initialize(); err != nil {
 		logger.Log().Fatalf("Error on database connection: %s", err)
