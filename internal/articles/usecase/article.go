@@ -1,9 +1,9 @@
 package usecase
 
 import (
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/ports/repositories"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/ports/validators"
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 
 	"github.com/sirupsen/logrus"
 

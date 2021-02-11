@@ -8,13 +8,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/echo/middlewares"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/echo/middlewares"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
 
 	"github.com/spf13/viper"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/postgres"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/postgres"
 
 	"github.com/sirupsen/logrus"
 

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/decoders"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/decoders"
 
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/api/context"
 

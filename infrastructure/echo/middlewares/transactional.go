@@ -3,7 +3,7 @@ package middlewares
 import (
 	"errors"
 
-	e "github.com/myugen/hexagonal-go-architecture/pkg/echo"
+	e "github.com/myugen/hexagonal-go-architecture/infrastructure/echo"
 
 	"github.com/labstack/echo/v4"
 	"github.com/myugen/hexagonal-go-architecture/utils/constants"

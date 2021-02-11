@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
 
 	"github.com/myugen/hexagonal-go-architecture/migrations"
 

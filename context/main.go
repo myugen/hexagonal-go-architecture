@@ -1,8 +1,8 @@
 package context
 
 import (
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
-	"github.com/myugen/hexagonal-go-architecture/pkg/postgres"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/postgres"
 )
 
 type Context interface {

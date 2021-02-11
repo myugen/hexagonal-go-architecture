@@ -2,12 +2,12 @@ package routes
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/echo/middlewares"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/postgres"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/api/context"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/api/handlers"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/usecase"
-	"github.com/myugen/hexagonal-go-architecture/pkg/echo/middlewares"
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
-	"github.com/myugen/hexagonal-go-architecture/pkg/postgres"
 )
 
 func RegisterRoute(parent *echo.Group) {

@@ -2,11 +2,11 @@ package usecase
 
 import (
 	"github.com/go-pg/pg/v10"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/db/dao"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/validator"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/ports/repositories"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/ports/validators"
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
 )
 
 type ArticleUsecaseContextMock struct {

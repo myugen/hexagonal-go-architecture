@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
 
 	"github.com/labstack/echo/v4"
 )

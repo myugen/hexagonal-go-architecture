@@ -3,7 +3,7 @@ package postgres
 import (
 	"context"
 
-	"github.com/myugen/hexagonal-go-architecture/pkg/logger"
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
 
 	"github.com/go-pg/pg/v10"
 )

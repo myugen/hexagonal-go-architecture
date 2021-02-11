@@ -20,7 +20,7 @@ func (l *Logger) Prefix() string {
 	return ""
 }
 
-func (l *Logger) SetPrefix(p string) {
+func (l *Logger) SetPrefix(_ string) {
 	// do nothing
 }
 
@@ -32,7 +32,7 @@ func (l *Logger) SetLevel(lvl log.Lvl) {
 	l.Logger.Level = toLogrusLevel(lvl)
 }
 
-func (l *Logger) SetHeader(h string) {
+func (l *Logger) SetHeader(_ string) {
 	// do nothing
 }
 
