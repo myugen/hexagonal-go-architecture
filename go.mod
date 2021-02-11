@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/fatih/color v1.9.0 // indirect
+	github.com/franela/goblin v0.0.0-20210113153425-413781f5e6c8
 	github.com/go-pg/pg/v10 v10.5.0
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/gorilla/schema v1.2.0
@@ -16,6 +17,7 @@ require (
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
+	github.com/onsi/gomega v1.10.5
 	github.com/pelletier/go-toml v1.8.1 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/robinjoseph08/go-pg-migrations/v3 v3.0.0
