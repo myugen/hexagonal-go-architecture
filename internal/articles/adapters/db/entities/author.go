@@ -1,6 +1,8 @@
 package entities
 
-import "github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
+import (
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
+)
 
 type AuthorEntity struct {
 	tableName struct{} `pg:"authors,alias:author"`
@@ -9,8 +11,8 @@ type AuthorEntity struct {
 	Name string
 }
 
-func (e *AuthorEntity) ToModel() *models.Author {
-	return &models.Author{
+func (e *AuthorEntity) ToModel() *domain.Author {
+	return &domain.Author{
 		ID:   e.ID,
 		Name: e.Name,
 	}

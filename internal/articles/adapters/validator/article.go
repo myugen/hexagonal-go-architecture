@@ -2,7 +2,7 @@ package validator
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
 	"github.com/pkg/errors"
 )
 
@@ -19,22 +19,22 @@ func NewArticleValidator() *ArticleValidator {
 	return &ArticleValidator{validator.New()}
 }
 
-func (v *ArticleValidator) ValidateCreate(command *models.ArticleCreateCommand) error {
+func (v *ArticleValidator) ValidateCreate(command *domain.ArticleCreateCommand) error {
 	return v.Struct(command)
 }
 
-func (v *ArticleValidator) ValidateUpdate(command *models.ArticleUpdateCommand) error {
+func (v *ArticleValidator) ValidateUpdate(command *domain.ArticleUpdateCommand) error {
 	return v.Struct(command)
 }
 
-func (v *ArticleValidator) ValidateDelete(model *models.Article) error {
+func (v *ArticleValidator) ValidateDelete(model *domain.Article) error {
 	if model.IsDeleted {
 		return errAlreadyDeleted
 	}
 	return nil
 }
 
-func (v *ArticleValidator) ValidateRecover(model *models.Article) error {
+func (v *ArticleValidator) ValidateRecover(model *domain.Article) error {
 	if !model.IsDeleted {
 		return errNotDeleted
 	}

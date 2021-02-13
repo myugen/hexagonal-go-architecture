@@ -2,7 +2,7 @@ package types
 
 import (
 	"github.com/go-pg/pg/v10/orm"
-	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
 )
 
 type ArticleFilter struct {
@@ -13,7 +13,7 @@ type ArticleFilter struct {
 	IncludedDeleted bool
 }
 
-func NewArticleFilter(query *models.ArticleQuery) *ArticleFilter {
+func NewArticleFilter(query *domain.ArticleQuery) *ArticleFilter {
 	return &ArticleFilter{
 		Limit:           query.Limit,
 		Offset:          query.Offset * query.Limit,

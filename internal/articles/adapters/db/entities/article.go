@@ -2,7 +2,7 @@ package entities
 
 import (
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/db/types"
-	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
 )
 
 type ArticleEntity struct {
@@ -16,12 +16,12 @@ type ArticleEntity struct {
 	types.SoftDelete
 }
 
-func (e *ArticleEntity) ToModel() *models.Article {
-	author := new(models.Author)
+func (e *ArticleEntity) ToModel() *domain.Article {
+	author := new(domain.Author)
 	if e.Author != nil {
 		author = e.Author.ToModel()
 	}
-	return &models.Article{
+	return &domain.Article{
 		ID:        e.ID,
 		Title:     e.Title,
 		Content:   e.Content,
@@ -30,14 +30,14 @@ func (e *ArticleEntity) ToModel() *models.Article {
 	}
 }
 
-func NewArticleEntity(command *models.ArticleCreateCommand) *ArticleEntity {
+func NewArticleEntity(command *domain.ArticleCreateCommand) *ArticleEntity {
 	return &ArticleEntity{
 		Title:   command.Title,
 		Content: command.Content,
 	}
 }
 
-func (e *ArticleEntity) UpdateFrom(command *models.ArticleUpdateCommand) {
+func (e *ArticleEntity) UpdateFrom(command *domain.ArticleUpdateCommand) {
 	e.Title = command.Title
 	e.Content = command.Content
 }

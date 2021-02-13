@@ -1,7 +1,7 @@
 package requests
 
 import (
-	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
 )
 
 type ArticleCreateRequest struct {
@@ -9,8 +9,8 @@ type ArticleCreateRequest struct {
 	Content string `json:"content"`
 }
 
-func (r *ArticleCreateRequest) ToCommand() *models.ArticleCreateCommand {
-	return &models.ArticleCreateCommand{
+func (r *ArticleCreateRequest) ToCommand() *domain.ArticleCreateCommand {
+	return &domain.ArticleCreateCommand{
 		Title:   r.Title,
 		Content: r.Content,
 	}
@@ -21,10 +21,10 @@ type ArticleUpdateRequest struct {
 	*ArticleCreateRequest
 }
 
-func (r *ArticleUpdateRequest) ToCommand() *models.ArticleUpdateCommand {
-	return &models.ArticleUpdateCommand{
+func (r *ArticleUpdateRequest) ToCommand() *domain.ArticleUpdateCommand {
+	return &domain.ArticleUpdateCommand{
 		ID: r.ID,
-		ArticleCreateCommand: &models.ArticleCreateCommand{
+		ArticleCreateCommand: &domain.ArticleCreateCommand{
 			Title:   r.Title,
 			Content: r.Content,
 		},
@@ -39,8 +39,8 @@ type ArticleQueryParams struct {
 	IncludedDeleted bool   `param:"included_deleted"`
 }
 
-func (a *ArticleQueryParams) ToArticleQuery() *models.ArticleQuery {
-	return &models.ArticleQuery{
+func (a *ArticleQueryParams) ToArticleQuery() *domain.ArticleQuery {
+	return &domain.ArticleQuery{
 		Offset:          a.Offset,
 		Limit:           a.Limit,
 		AuthorID:        a.AuthorID,

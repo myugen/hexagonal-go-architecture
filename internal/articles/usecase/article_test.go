@@ -3,7 +3,8 @@ package usecase_test
 import (
 	"testing"
 
-	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
+
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/ports/services"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/usecase"
 
@@ -28,7 +29,7 @@ func TestArticleUsecase(t *testing.T) {
 
 		g.Describe("Create method", func() {
 			g.It("foo", func() {
-				command := new(models.ArticleCreateCommand)
+				command := new(domain.ArticleCreateCommand)
 				result, err := articleUsecase.Create(ctx, command)
 				Expect(err).ShouldNot(HaveOccurred())
 				Expect(result).ShouldNot(BeNil())

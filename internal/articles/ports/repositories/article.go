@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"github.com/myugen/hexagonal-go-architecture/context"
-	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
 )
 
 type ArticleRepositoryContext interface {
@@ -10,11 +10,11 @@ type ArticleRepositoryContext interface {
 }
 
 type ArticleRepository interface {
-	FindByID(ctx ArticleRepositoryContext, id uint) (*models.Article, error)
-	FindDeletedByID(ctx ArticleRepositoryContext, id uint) (*models.Article, error)
-	Find(ctx ArticleRepositoryContext, query *models.ArticleQuery) ([]*models.Article, error)
-	Create(ctx ArticleRepositoryContext, command *models.ArticleCreateCommand) (*models.Article, error)
-	Update(ctx ArticleRepositoryContext, command *models.ArticleUpdateCommand) (*models.Article, error)
-	Delete(ctx ArticleRepositoryContext, id uint) (*models.Article, error)
-	Recover(ctx ArticleRepositoryContext, id uint) (*models.Article, error)
+	FindByID(ctx ArticleRepositoryContext, id uint) (*domain.Article, error)
+	FindDeletedByID(ctx ArticleRepositoryContext, id uint) (*domain.Article, error)
+	Find(ctx ArticleRepositoryContext, query *domain.ArticleQuery) ([]*domain.Article, error)
+	Create(ctx ArticleRepositoryContext, command *domain.ArticleCreateCommand) (*domain.Article, error)
+	Update(ctx ArticleRepositoryContext, command *domain.ArticleUpdateCommand) (*domain.Article, error)
+	Delete(ctx ArticleRepositoryContext, id uint) (*domain.Article, error)
+	Recover(ctx ArticleRepositoryContext, id uint) (*domain.Article, error)
 }

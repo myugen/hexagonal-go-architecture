@@ -1,13 +1,13 @@
 package dao
 
 import (
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/ports/repositories"
 
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/db/entities"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/db/types"
 
 	"github.com/go-pg/pg/v10"
-	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
 )
 
 type article struct{}
@@ -16,7 +16,7 @@ func NewArticleDAO() *article {
 	return &article{}
 }
 
-func (d *article) FindByID(ctx repositories.ArticleRepositoryContext, id uint) (*models.Article, error) {
+func (d *article) FindByID(ctx repositories.ArticleRepositoryContext, id uint) (*domain.Article, error) {
 	eArticles := new(entities.ArticleEntity)
 	eArticles.ID = id
 	if err := ctx.Transaction().Model(eArticles).
@@ -29,7 +29,7 @@ func (d *article) FindByID(ctx repositories.ArticleRepositoryContext, id uint) (
 	return eArticles.ToModel(), nil
 }
 
-func (d *article) FindDeletedByID(ctx repositories.ArticleRepositoryContext, id uint) (*models.Article, error) {
+func (d *article) FindDeletedByID(ctx repositories.ArticleRepositoryContext, id uint) (*domain.Article, error) {
 	eArticles := new(entities.ArticleEntity)
 	eArticles.ID = id
 	if err := ctx.Transaction().Model(eArticles).
@@ -43,7 +43,7 @@ func (d *article) FindDeletedByID(ctx repositories.ArticleRepositoryContext, id 
 	return eArticles.ToModel(), nil
 }
 
-func (d *article) Find(ctx repositories.ArticleRepositoryContext, query *models.ArticleQuery) ([]*models.Article, error) {
+func (d *article) Find(ctx repositories.ArticleRepositoryContext, query *domain.ArticleQuery) ([]*domain.Article, error) {
 	eArticles := new([]*entities.ArticleEntity)
 	fArticle := types.NewArticleFilter(query)
 	if err := ctx.Transaction().Model(eArticles).
@@ -53,7 +53,7 @@ func (d *article) Find(ctx repositories.ArticleRepositoryContext, query *models.
 		return nil, err
 	}
 
-	var articles []*models.Article
+	var articles []*domain.Article
 	for _, eArticle := range *eArticles {
 		articles = append(articles, eArticle.ToModel())
 	}
@@ -61,7 +61,7 @@ func (d *article) Find(ctx repositories.ArticleRepositoryContext, query *models.
 	return articles, nil
 }
 
-func (d *article) Create(ctx repositories.ArticleRepositoryContext, command *models.ArticleCreateCommand) (*models.Article, error) {
+func (d *article) Create(ctx repositories.ArticleRepositoryContext, command *domain.ArticleCreateCommand) (*domain.Article, error) {
 	eArticle := entities.NewArticleEntity(command)
 	if _, err := ctx.Transaction().Model(eArticle).
 		Insert(); err != nil {
@@ -71,7 +71,7 @@ func (d *article) Create(ctx repositories.ArticleRepositoryContext, command *mod
 	return eArticle.ToModel(), nil
 }
 
-func (d *article) Update(ctx repositories.ArticleRepositoryContext, command *models.ArticleUpdateCommand) (*models.Article, error) {
+func (d *article) Update(ctx repositories.ArticleRepositoryContext, command *domain.ArticleUpdateCommand) (*domain.Article, error) {
 	eArticle := new(entities.ArticleEntity)
 	eArticle.ID = command.ID
 	if err := ctx.Transaction().Model(eArticle).
@@ -91,7 +91,7 @@ func (d *article) Update(ctx repositories.ArticleRepositoryContext, command *mod
 	return eArticle.ToModel(), nil
 }
 
-func (d *article) Delete(ctx repositories.ArticleRepositoryContext, id uint) (*models.Article, error) {
+func (d *article) Delete(ctx repositories.ArticleRepositoryContext, id uint) (*domain.Article, error) {
 	eArticle := new(entities.ArticleEntity)
 	eArticle.ID = id
 	if _, err := ctx.Transaction().Model(eArticle).
@@ -104,7 +104,7 @@ func (d *article) Delete(ctx repositories.ArticleRepositoryContext, id uint) (*m
 	return eArticle.ToModel(), nil
 }
 
-func (d *article) Recover(ctx repositories.ArticleRepositoryContext, id uint) (*models.Article, error) {
+func (d *article) Recover(ctx repositories.ArticleRepositoryContext, id uint) (*domain.Article, error) {
 	eArticle := new(entities.ArticleEntity)
 	eArticle.ID = id
 	if err := ctx.Transaction().Model(eArticle).

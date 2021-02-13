@@ -1,6 +1,8 @@
 package responses
 
-import "github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
+import (
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
+)
 
 type ArticleResponse struct {
 	ID        uint   `json:"id"`
@@ -10,7 +12,7 @@ type ArticleResponse struct {
 	IsDeleted bool   `json:"is_deleted"`
 }
 
-func NewArticleResponse(article *models.Article) *ArticleResponse {
+func NewArticleResponse(article *domain.Article) *ArticleResponse {
 	author := ""
 	if article.Author != nil {
 		author = article.Author.Name

@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain/models"
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/domain"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/ports/repositories"
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/ports/validators"
 )
@@ -13,10 +13,10 @@ type ArticleServiceContext interface {
 }
 
 type ArticleService interface {
-	Get(ctx ArticleServiceContext, id uint) (*models.Article, error)
-	Find(ctx ArticleServiceContext, query *models.ArticleQuery) ([]*models.Article, error)
-	Create(ctx ArticleServiceContext, command *models.ArticleCreateCommand) (*models.Article, error)
-	Update(ctx ArticleServiceContext, command *models.ArticleUpdateCommand) (*models.Article, error)
-	Delete(ctx ArticleServiceContext, id uint) (*models.Article, error)
-	Recover(ctx ArticleServiceContext, id uint) (*models.Article, error)
+	Get(ctx ArticleServiceContext, id uint) (*domain.Article, error)
+	Find(ctx ArticleServiceContext, query *domain.ArticleQuery) ([]*domain.Article, error)
+	Create(ctx ArticleServiceContext, command *domain.ArticleCreateCommand) (*domain.Article, error)
+	Update(ctx ArticleServiceContext, command *domain.ArticleUpdateCommand) (*domain.Article, error)
+	Delete(ctx ArticleServiceContext, id uint) (*domain.Article, error)
+	Recover(ctx ArticleServiceContext, id uint) (*domain.Article, error)
 }

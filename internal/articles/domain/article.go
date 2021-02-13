@@ -1,4 +1,4 @@
-package models
+package domain
 
 type Article struct {
 	ID        uint    `json:"id"`
