@@ -9,7 +9,7 @@ require (
 	github.com/go-playground/validator/v10 v10.4.1
 	github.com/gorilla/schema v1.2.0
 	github.com/imdario/mergo v0.3.11 // indirect
-	github.com/labstack/echo/v4 v4.1.17
+	github.com/labstack/echo/v4 v4.2.0
 	github.com/labstack/gommon v0.3.0
 	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
@@ -29,7 +29,10 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/urfave/cli v1.22.4 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.0.0-beta.9 // indirect
-	golang.org/x/sys v0.0.0-20201107080550-4d91cf3a1aaf // indirect
+	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
+	golang.org/x/net v0.0.0-20210119194325-5f4716e94777 // indirect
+	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
+	golang.org/x/text v0.3.5 // indirect
 	golang.org/x/tools v0.0.0-20201027213030-631220838841 // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.8 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
