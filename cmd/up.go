@@ -8,6 +8,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/myugen/hexagonal-go-architecture/internal/articles/app"
+
 	"github.com/myugen/hexagonal-go-architecture/infrastructure/echo/middlewares"
 
 	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
@@ -19,8 +21,6 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/labstack/echo/v4/middleware"
-
-	"github.com/myugen/hexagonal-go-architecture/internal/articles/adapters/api/routes"
 
 	"github.com/labstack/echo/v4"
 
@@ -65,7 +65,7 @@ func setupServer() *echo.Echo {
 
 	apiRoute := e.Group("/api")
 
-	routes.RegisterRoute(apiRoute)
+	app.SetupArticleApp(apiRoute)
 	return e
 }
 

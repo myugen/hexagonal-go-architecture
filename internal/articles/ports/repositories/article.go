@@ -9,7 +9,7 @@ type ArticleRepositoryContext interface {
 	context.Context
 }
 
-type IArticle interface {
+type ArticleRepository interface {
 	FindByID(ctx ArticleRepositoryContext, id uint) (*models.Article, error)
 	FindDeletedByID(ctx ArticleRepositoryContext, id uint) (*models.Article, error)
 	Find(ctx ArticleRepositoryContext, query *models.ArticleQuery) ([]*models.Article, error)

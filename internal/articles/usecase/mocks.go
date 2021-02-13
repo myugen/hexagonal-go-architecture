@@ -9,36 +9,36 @@ import (
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/ports/validators"
 )
 
-type ArticleUsecaseContextMock struct {
-	repository repositories.IArticle
-	validator  validators.IArticle
+type ArticleServiceContextMock struct {
+	repository repositories.ArticleRepository
+	validator  validators.ArticleValidator
 	logger     *logger.Logger
 	db         *pg.DB
 	tx         *pg.Tx
 }
 
-func (c *ArticleUsecaseContextMock) ArticleRepository() repositories.IArticle {
+func (c *ArticleServiceContextMock) ArticleRepository() repositories.ArticleRepository {
 	return c.repository
 }
 
-func (c *ArticleUsecaseContextMock) ArticleValidator() validators.IArticle {
+func (c *ArticleServiceContextMock) ArticleValidator() validators.ArticleValidator {
 	return c.validator
 }
 
-func (c *ArticleUsecaseContextMock) Transaction() *pg.Tx {
+func (c *ArticleServiceContextMock) Transaction() *pg.Tx {
 	return c.tx
 }
 
-func (c *ArticleUsecaseContextMock) DB() *pg.DB {
+func (c *ArticleServiceContextMock) DB() *pg.DB {
 	return c.db
 }
 
-func (c *ArticleUsecaseContextMock) Log() *logger.Logger {
+func (c *ArticleServiceContextMock) Log() *logger.Logger {
 	return c.logger
 }
 
-func NewArticleUsecaseContextMock() *ArticleUsecaseContextMock {
-	return &ArticleUsecaseContextMock{
+func NewArticleUsecaseContextMock() *ArticleServiceContextMock {
+	return &ArticleServiceContextMock{
 		repository: dao.NewArticleDaoMock(),
 		validator:  validator.NewArticleValidator(),
 		logger:     logger.Log(),

@@ -11,17 +11,17 @@ import (
 	"github.com/pkg/errors"
 )
 
-type ArticleAPIContext struct {
+type ArticleAppContext struct {
 	echo.Context
 	db                *pg.DB
 	tx                *pg.Tx
 	log               *logger.Logger
-	articleRepository repositories.IArticle
-	articleValidator  validators.IArticle
+	articleRepository repositories.ArticleRepository
+	articleValidator  validators.ArticleValidator
 }
 
-func NewArticleAPIContext(c echo.Context, db *pg.DB, log *logger.Logger) *ArticleAPIContext {
-	return &ArticleAPIContext{
+func NewArticleAppContext(c echo.Context, db *pg.DB, log *logger.Logger) *ArticleAppContext {
+	return &ArticleAppContext{
 		Context:           c,
 		db:                db,
 		articleRepository: dao.NewArticleDAO(),
@@ -30,34 +30,34 @@ func NewArticleAPIContext(c echo.Context, db *pg.DB, log *logger.Logger) *Articl
 	}
 }
 
-func (a *ArticleAPIContext) ArticleRepository() repositories.IArticle {
+func (a *ArticleAppContext) ArticleRepository() repositories.ArticleRepository {
 	return a.articleRepository
 }
 
-func (a *ArticleAPIContext) ArticleValidator() validators.IArticle {
+func (a *ArticleAppContext) ArticleValidator() validators.ArticleValidator {
 	return a.articleValidator
 }
 
-func (a *ArticleAPIContext) Transaction() *pg.Tx {
+func (a *ArticleAppContext) Transaction() *pg.Tx {
 	return a.tx
 }
 
-func (a *ArticleAPIContext) DB() *pg.DB {
+func (a *ArticleAppContext) DB() *pg.DB {
 	return a.db
 }
 
-func (a *ArticleAPIContext) Log() *logger.Logger {
+func (a *ArticleAppContext) Log() *logger.Logger {
 	return a.log
 }
 
-func (a *ArticleAPIContext) CommitTransaction() error {
+func (a *ArticleAppContext) CommitTransaction() error {
 	return a.tx.Commit()
 }
-func (a *ArticleAPIContext) RollbackTransaction() error {
+func (a *ArticleAppContext) RollbackTransaction() error {
 	return a.tx.Rollback()
 }
 
-func (a *ArticleAPIContext) BeginTransaction() (*pg.Tx, error) {
+func (a *ArticleAppContext) BeginTransaction() (*pg.Tx, error) {
 	tx, err := a.db.Begin()
 	if err != nil {
 		return nil, errors.WithStack(err)

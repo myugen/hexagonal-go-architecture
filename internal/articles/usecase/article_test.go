@@ -17,8 +17,8 @@ func TestArticleUsecase(t *testing.T) {
 		g.Fail(message)
 	})
 
-	var articleUsecase services.IArticle
-	var ctx usecase.ArticleUsecaseContext
+	var articleUsecase services.ArticleService
+	var ctx services.ArticleServiceContext
 
 	g.Describe("Article use cases", func() {
 		g.BeforeEach(func() {
