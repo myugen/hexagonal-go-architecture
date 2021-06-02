@@ -28,15 +28,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	upCmd = &cobra.Command{
-		Use:   "up",
-		Short: fmt.Sprintf("Up %s server", constants.AppName),
-		Run:   run,
-	}
-)
+var upCmd = &cobra.Command{
+	Use:   "up",
+	Short: fmt.Sprintf("Up %s server", constants.AppName),
+	Run:   runUp,
+}
 
-func run(_ *cobra.Command, _ []string) {
+func runUp(_ *cobra.Command, _ []string) {
 	logger.Log().Debug("Connecting postgres database")
 	if err := postgres.Initialize(); err != nil {
 		logger.Log().Fatalf("Error on database connection: %s", err)
