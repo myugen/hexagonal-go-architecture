@@ -108,7 +108,7 @@ func toLogrusLevel(level log.Lvl) logrus.Level {
 	return logrus.InfoLevel
 }
 
-// To Echo.log.lvl
+// To echo.log.Lvl
 func toEchoLevel(level logrus.Level) log.Lvl {
 	switch level {
 	case logrus.DebugLevel:

@@ -24,7 +24,7 @@ func Logger() echo.MiddlewareFunc {
 
 			id := req.Header.Get(echo.HeaderXRequestID)
 			if id == "" {
-				id = res.Header().Get(echo.HeaderXRequestID)
+				id = "none"
 			}
 			reqSize := req.Header.Get(echo.HeaderContentLength)
 			if reqSize == "" {
@@ -33,7 +33,7 @@ func Logger() echo.MiddlewareFunc {
 
 			log := logger.Log().WithFields(map[string]interface{}{
 				"module":     "api",
-				"id":         "id",
+				"id":         id,
 				"remote_ip":  c.RealIP(),
 				"host":       req.Host,
 				"method":     req.Method,
@@ -44,16 +44,13 @@ func Logger() echo.MiddlewareFunc {
 				"bytes_in":   reqSize,
 				"bytes_out":  strconv.FormatInt(res.Size, 10),
 			})
-			if err != nil {
-				log.WithField("error", err)
-			}
 			if c.QueryParams().Encode() != "" {
 				log.WithField("query", c.QueryParams().Encode())
 			}
 			if req.Referer() != "" {
 				log.WithField("referer", req.Referer())
 			}
-			log.Debugf("%s - %s", req.Method, req.RequestURI)
+			log.Infof("%s - %s", req.Method, req.RequestURI)
 			return err
 		}
 	}
