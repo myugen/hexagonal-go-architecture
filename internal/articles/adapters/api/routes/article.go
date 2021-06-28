@@ -8,7 +8,11 @@ import (
 )
 
 func RegisterRoute(parent *echo.Group, handler *handlers.ArticleHandler) {
-	articleRoute := parent.Group("/articles", middlewares.ArticleAppContextMiddleware(), commonMiddlewares.Transactional())
+	articleRoute := parent.Group("/articles",
+		middlewares.ArticleAppContextMiddleware(),
+		middlewares.ArticleErrorHandlerMiddleware(),
+		commonMiddlewares.Transactional())
+
 	articleRoute.GET("", handler.Find)
 	articleRoute.GET("/:id", handler.Get)
 	articleRoute.POST("", handler.Create)

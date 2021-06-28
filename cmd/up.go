@@ -8,6 +8,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/echo/errors"
+
 	"github.com/myugen/hexagonal-go-architecture/internal/articles/app"
 
 	"github.com/myugen/hexagonal-go-architecture/infrastructure/echo/middlewares"
@@ -60,6 +62,7 @@ func setupServer() *echo.Echo {
 	if viper.GetBool("verbose") {
 		e.Use(middlewares.Logger())
 	}
+	e.HTTPErrorHandler = errors.HTTPErrorHandler
 
 	apiRoute := e.Group("/api")
 
