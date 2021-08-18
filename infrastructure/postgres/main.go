@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/config"
+
 	"github.com/myugen/hexagonal-go-architecture/infrastructure/logger"
 
 	"github.com/myugen/hexagonal-go-architecture/migrations"
@@ -42,13 +44,14 @@ func Close() error {
 }
 
 func create() error {
-	dbConfig := viper.GetStringMapString("db")
+	appConfig := config.Config()
 	db = pg.Connect(&pg.Options{
-		Addr:            fmt.Sprintf("%s:%s", dbConfig["host"], dbConfig["port"]),
-		User:            dbConfig["user"],
-		Database:        dbConfig["database"],
-		Password:        dbConfig["password"],
+		Addr:            fmt.Sprintf("%s:%d", appConfig.DB.Host, appConfig.DB.Port),
+		User:            appConfig.DB.User,
+		Database:        appConfig.DB.Database,
+		Password:        appConfig.DB.Password,
 		ApplicationName: constants.AppName,
+		MaxRetries:      5,
 		OnConnect: func(ctx context.Context, cn *pg.Conn) error {
 			_, cnErr := cn.Exec(`SET TIME ZONE 'UTC';`)
 			return cnErr

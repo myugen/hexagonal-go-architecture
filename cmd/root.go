@@ -2,6 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"strings"
+
+	"github.com/myugen/hexagonal-go-architecture/infrastructure/config"
 
 	"github.com/myugen/hexagonal-go-architecture/utils/constants"
 
@@ -35,7 +39,15 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&userLicense, "license", "l", "MIT", "name of license for the project")
 	viper.SetDefault("author", "Miguel Cabrera <me@mcabsan.dev>")
 	viper.SetDefault("license", "MIT")
+	viper.SetDefault("mode", "development")
 	viper.SetDefault("version", "0.0.1")
+	viper.SetDefault("server.port", "8080")
+	viper.SetDefault("db.host", "0.0.0.0")
+	viper.SetDefault("db.port", "5432")
+	viper.SetDefault("db.database", "dev")
+	viper.SetDefault("db.user", "dev")
+	viper.SetDefault("db.password", "changeme")
+	viper.SetDefault("verbose", false)
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(upCmd)
 }
@@ -60,9 +72,23 @@ func initConfig() {
 	}
 
 	viper.SetEnvPrefix(constants.AppLabel)
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	} else {
+		switch err.(type) {
+		case viper.ConfigFileNotFoundError:
+			fmt.Println("No Config file found, loaded config from Environment - Default path ./conf")
+		default:
+			log.Fatalf("Error when Fetching Configuration - %s", err)
+		}
 	}
+
+	var appConfig config.AppConfig
+	if err := viper.Unmarshal(&appConfig); err != nil {
+		log.Fatalf("Error when Fetching Configuration - %s", err)
+	}
+	config.Initialize(appConfig)
 }
