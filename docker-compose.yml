@@ -1,0 +1,47 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: "postgres:13"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: pg_isready -U ${DB_USER} -d ${DB_DATABASE}
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    networks:
+      - default-net
+
+  app:
+    build:
+      context: .
+    image: hexagonal-go-architecture
+    env_file:
+      - .env
+    environment:
+      APP_MODE: "development"
+      APP_SERVER_PORT: ${PORT}
+      APP_DB_HOST: "postgres"
+      APP_DB_PORT: ${DB_PORT}
+      APP_DB_DATABASE: ${DB_DATABASE}
+      APP_DB_USER: ${DB_USER}
+      APP_DB_PASSWORD: ${DB_PASSWORD}
+      VERBOSE: 1
+    tty: true
+    entrypoint: ["/bin/app", "up"]
+    ports:
+      - "${PORT}:${PORT}"
+    networks:
+      - default-net
+    depends_on:
+      - postgres
+
+
+
+networks:
+  default-net:
